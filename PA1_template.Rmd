@@ -7,12 +7,81 @@ output:
 
 
 ## Loading and preprocessing the data
+```{r, echo=FALSE}
+# We want to set our working directory right
+setwd("~/Documents/Coursera/ReproducibleResearch/RepData_PeerAssessment1/")
+```
 
+We will load the activity data captured from the cellphones from file activity.zip. We will cache the dataset captured for future use.
+We will change teh date column to a Date field and also transform the data_frame to tbl_df format used by dplyr.
 
+```{r, cache=TRUE}
+read.zip <- function(zipFile) {
+        zipFileDir <- dirname(zipFile)
+        setwd(zipFileDir)
+        zipdir <- tempfile()
+        dir.create(zipdir)
+        unzip(zipFile, exdir = zipdir)
+        filesInArchive <- list.files(zipdir)
+        csvFile <- paste(zipdir, filesInArchive[1], sep = "/")
+        read.csv(csvFile, header = T)
+}
+
+activityData <- read.zip("~/Documents/Coursera/ReproducibleResearch/RepData_PeerAssessment1/activity.zip")
+dim(activityData)
+colnames(activityData)
+library(dplyr, quietly = TRUE)
+activityData <- tbl_df(activityData)
+activityData <- mutate(activityData, date = as.Date(date))
+activityData
+```
 
 ## What is mean total number of steps taken per day?
 
+Now, we will try to explore the data to calculate the daily total steps taken by the person. The following is the code.
 
+```{r dailyTotalSteps}
+library(dplyr, quietly = TRUE)
+dailySteps <- activityData %>%
+        group_by(date) %>%
+        summarize(totalSteps = sum(steps, na.rm = T))
+dailySteps
+noOfDays <- dim(dailySteps)[1]
+noOfDays
+```
+
+Let us discover the person's daily steps through some basic statistical summaries.
+
+```{r}
+summary(dailySteps$totalSteps)
+```
+
+Now, we will plot this daily steps on a histogram to see discover the frequency of number of steps taken over the 61 day period.
+
+```{r dailyStepsHistogram, fig.height=6}
+printHistogram <- function() {
+        par(mar = c(5, 4, 1, 1))
+        with (
+                dailySteps, 
+                hist(totalSteps, main = "Histogram of total number of steps taken each day", breaks = 15, xlab = "Steps per day")
+        )
+}
+printHistogram()
+```
+
+Let us also look at the daily steps over the 61 day period with the help of a bar plot.
+
+```{r dailyStepsBarPlot, fig.height=6}
+printBarPlot <- function() {
+        par(mar = c(8, 4, 1, 1))
+        nolabels <- dim(dailySteps)[1]
+        datelabels <- rep(NA, nolabels)
+        datelabels[seq(1,nolabels,3)] <- strftime(dailySteps$date[seq(1,nolabels,3)], "%Y-%m-%d")
+        datelabels <- as.Date(datelabels, "%Y-%m-%d")
+        barplot(dailySteps$totalSteps, space = 1, las = 2, names.arg = datelabels)
+}
+printBarPlot()
+```
 
 ## What is the average daily activity pattern?
 
