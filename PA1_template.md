@@ -218,7 +218,13 @@ Let us evaluate which 5 minute interval he has recorded the most steps on an ave
 
 
 ```r
-summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+ans <- summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+hr <- ans[1] %/% 100
+mn <- ans[1] %% 100
+mnend <- mn + 5
+periodStart <- paste(hr, mn, sep = ":")
+periodEnd <- paste(hr, mnend, sep = ":")
+ans
 ```
 
 ```
@@ -228,7 +234,7 @@ summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
 ## 1      835 206.1698
 ```
 
-
+So, the 5 minute period denoted by 835 (implying the time beween 8:35 and 8:40) is the time interval when the person has taken the most steps on average.
 
 ## Imputing missing values
 

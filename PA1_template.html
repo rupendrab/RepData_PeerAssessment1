@@ -382,7 +382,13 @@ with (
 
 <p>Let us evaluate which 5 minute interval he has recorded the most steps on an average.</p>
 
-<pre><code class="r">summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+<pre><code class="r">ans &lt;- summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+hr &lt;- ans[1] %/% 100
+mn &lt;- ans[1] %% 100
+mnend &lt;- mn + 5
+periodStart &lt;- paste(hr, mn, sep = &quot;:&quot;)
+periodEnd &lt;- paste(hr, mnend, sep = &quot;:&quot;)
+ans
 </code></pre>
 
 <pre><code>## Source: local data frame [1 x 2]
@@ -390,6 +396,8 @@ with (
 ##   interval    steps
 ## 1      835 206.1698
 </code></pre>
+
+<p>So, the 5 minute period denoted by 835 (implying the time beween 8:35 and 8:40) is the time interval when the person has taken the most steps on average.</p>
 
 <h2>Imputing missing values</h2>
 

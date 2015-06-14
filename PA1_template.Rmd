@@ -120,10 +120,16 @@ So, it does look like that the person is the most active right around 9:00 in th
 Let us evaluate which 5 minute interval he has recorded the most steps on an average.
 
 ```{r IntervalWithMaxSteps}
-summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+ans <- summaryByInterval[summaryByInterval$steps == max(summaryByInterval$steps),]
+hr <- ans[1] %/% 100
+mn <- ans[1] %% 100
+mnend <- mn + 5
+periodStart <- paste(hr, mn, sep = ":")
+periodEnd <- paste(hr, mnend, sep = ":")
+ans
 ```
 
-
+So, the 5 minute period denoted by `r ans[1]` (implying the time beween `r periodStart` and `r periodEnd`) is the time interval when the person has taken the most steps on average.
 
 ## Imputing missing values
 
